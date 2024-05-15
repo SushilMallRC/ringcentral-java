@@ -3,10 +3,11 @@ plugins {
     id 'maven-publish'
     id 'java-library'
     id 'signing'
+    id 'jacoco'
 }
 
-group 'com.ringcentral'
-version '3.1.3'
+group 'app.nirmal'
+version '0.0.1'
 
 sourceCompatibility = 1.8
 
@@ -14,6 +15,17 @@ repositories {
     mavenCentral()
 }
 
+jacoco {
+    toolVersion = "0.8.11"
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+        html.destination file("${buildDir}/jacocoHtml")
+    }
+}
 dependencies {
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.11.0'
@@ -28,7 +40,7 @@ java {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = 'ringcentral'
+            artifactId = 'test-ringcentral'
             from components.java
             versionMapping {
                 usage('java-api') {
@@ -39,9 +51,9 @@ publishing {
                 }
             }
             pom {
-                name = 'RingCentral SDK'
-                description = 'RingCentral Java SDK'
-                url = 'https://github.com/ringcentral/ringcentral-java'
+                name = 'Test RingCentral SDK'
+                description = 'Test RingCentral Java SDK'
+                url = 'https://github.com/SushilMallRC/ringcentral-java'
                 licenses {
                     license {
                         name = 'MIT'
@@ -50,25 +62,16 @@ publishing {
                 }
                 developers {
                     developer {
-                        id = 'tylerliu'
-                        name = 'Tyler Liu'
-                        email = 'tyler.liu@ringcentral.com'
+                        id = 'SushilMallRC'
+                        name = 'Sushil Mall'
+                        email = 'sushil.mall@ringcentral.com'
                     }
                 }
                 scm {
-                    connection = 'scm:git:git://git@github.com:ringcentral/ringcentral-java.git'
-                    developerConnection = 'scm:git:ssh://git@github.com:ringcentral/ringcentral-java.git'
-                    url = 'https://github.com/ringcentral/ringcentral-java'
+                    connection = 'scm:git:git://git@github.com:SushilMallRC/ringcentral-java.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:SushilMallRC/ringcentral-java.git'
+                    url = 'https://github.com/SushilMallRC/ringcentral-java'
                 }
-            }
-        }
-    }
-    repositories {
-        maven {
-            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            credentials {
-                username = ossrhUsername
-                password = ossrhPassword
             }
         }
     }

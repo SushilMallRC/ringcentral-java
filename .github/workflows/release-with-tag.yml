@@ -4,14 +4,43 @@ on:
     push:
         branches:
             - master
+            - publish--maven
 
 jobs:
+    Test:
+        environment: prod
+        runs-on: ubuntu-latest
+
+        steps:
+            -   uses: actions/checkout@v4
+            -   name: Restore gradle.properties
+                env:
+                    GRADLE_PROPERTIES: ${{ secrets.GRADLE_PROPERTIES }}
+                shell: bash
+                run: |
+                    mkdir -p ~/.gradle/
+                    echo "GRADLE_USER_HOME=${HOME}/.gradle" >> $GITHUB_ENV
+                    echo "${GRADLE_PROPERTIES}" > ~/.gradle/gradle.properties
+            -   uses: actions/setup-java@v2
+                with:
+                    java-version: '17'
+                    distribution: 'temurin'
+            -   run: chmod +x gradlew
+            -   run: ./gradlew test
+                env:
+                    RINGCENTRAL_SERVER_URL: ${{ secrets.RINGCENTRAL_SERVER_URL }}
+                    RINGCENTRAL_CLIENT_ID: ${{ secrets.RINGCENTRAL_CLIENT_ID }}
+                    RINGCENTRAL_CLIENT_SECRET: ${{ secrets.RINGCENTRAL_CLIENT_SECRET }}
+                    RINGCENTRAL_JWT_TOKEN: ${{ secrets.RINGCENTRAL_JWT_TOKEN }}
+                    RINGCENTRAL_SENDER: ${{ secrets.RINGCENTRAL_SENDER }}
+                    RINGCENTRAL_RECEIVER: ${{ secrets.RINGCENTRAL_RECEIVER }}
     publish:
         name: Publish
+        needs: Test
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
 
             - name: Set up JDK
               uses: actions/setup-java@v2
